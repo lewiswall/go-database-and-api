@@ -2,6 +2,7 @@ package datab
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 type car struct {
@@ -52,10 +53,40 @@ func GetAllCars(db *sql.DB) ([]car, error) {
 			&car1.EngineID, &car1.Price)
 
 		if err != nil {
-
 			return nil, err
 		}
 		cars = append(cars, car1)
 	}
 	return cars, nil
+}
+
+func GetCarByID(db *sql.DB, id string) (car, error) {
+	query := "select carID, carBrandName, carName,fuelTypeName ,carBodyName, driveWheelName, engineLocationName, " +
+		"wheelBase, carLength, carWidth, carHeight, curbWeight, doorNumber, cityMPG, highwayMPG, " +
+		"car.engineID, price " +
+		"from car, carBrand, engine, fuelType, carBody, driveWheel, engineLocation " +
+		"where car.carBrandID = carBrand.carBrandID and car.engineID = engine.engineID and " +
+		"engine.fuelTypeID = fuelType.fuelTypeID and car.carBodyID = carBody.carBodyID and " +
+		"car.driveWheelID = driveWheel.driveWheelID and car.engineLocationID = engineLocation.engineLocationID and" +
+		"carID = " + id
+
+	result, err := db.Query(query)
+	if err != nil {
+		return car{}, err
+	}
+	defer result.Close()
+
+	fmt.Println("here")
+
+	var car1 car
+
+	err = result.Scan(&car1.ID, &car1.CarBrand, &car1.CarName, &car1.FuelType, &car1.CarBody,
+		&car1.DriveWheel, &car1.EngineLocation, &car1.WheelBase, &car1.CarLength, &car1.CarWidth,
+		&car1.CarHeight, &car1.CurbWeight, &car1.DoorNum, &car1.CityMPG, &car1.HighwayMPG,
+		&car1.EngineID, &car1.Price)
+
+	if err != nil {
+		return car{}, err
+	}
+	return car1, nil
 }

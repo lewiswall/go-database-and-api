@@ -26,7 +26,14 @@ func getAllCars(c *gin.Context) {
 }
 
 func getCarByID(c *gin.Context) {
+	params := c.Request.URL.Query()
+	id := params.Get("id")
 
+	car, err := datab.GetCarByID(db, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "There was an error while trying to query the database")
+	}
+	c.JSON(http.StatusOK, car)
 }
 
 var db *sql.DB
@@ -43,6 +50,7 @@ func main() {
 	router.SetTrustedProxies([]string{"127.0.0.1"})
 	router.GET("/brands", getAllBrands)
 	router.GET("/cars", getAllCars)
+	router.GET("/car", getCarByID)
 
 	fmt.Println("Server Starting")
 	router.Run("localhost:8080")

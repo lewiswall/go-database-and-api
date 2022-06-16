@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"net/http"
 )
 
@@ -56,6 +57,17 @@ func delCarByID(c *gin.Context) {
 
 }
 
+func addCar(c *gin.Context) {
+	var newCar datab.CarComit
+	if err := c.BindJSON(&newCar); err != nil {
+		log.Println(err)
+		return
+	}
+
+	datab.AddCar(db, newCar)
+
+}
+
 var db *sql.DB
 
 func main() {
@@ -72,6 +84,7 @@ func main() {
 	router.GET("/cars", getAllCars)
 	router.GET("/car", getCarByID)
 	router.DELETE("/del-car", delCarByID)
+	router.POST("/add-car", addCar)
 
 	fmt.Println("Server Starting")
 	router.Run("localhost:8080")

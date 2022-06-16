@@ -12,6 +12,7 @@ func DeleteCar(db *sql.DB, id string) error {
 		log.Println(err)
 		return err
 	}
+	defer query.Close()
 
 	res, err := query.Exec(id)
 	if err != nil {

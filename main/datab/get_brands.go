@@ -2,6 +2,7 @@ package datab
 
 import (
 	"database/sql"
+	"log"
 )
 
 type brand struct {
@@ -11,6 +12,7 @@ type brand struct {
 func GetAllBrands(db *sql.DB) ([]brand, error) {
 	results, err := db.Query("Select carBrandName FROM carBrand")
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
@@ -24,7 +26,8 @@ func GetAllBrands(db *sql.DB) ([]brand, error) {
 		err = results.Scan(&brand1.Brand)
 
 		if err != nil {
-			panic(err.Error())
+			log.Println(err)
+			return nil, err
 		}
 		brands = append(brands, brand1)
 

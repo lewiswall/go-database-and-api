@@ -28,12 +28,32 @@ func getAllCars(c *gin.Context) {
 func getCarByID(c *gin.Context) {
 	params := c.Request.URL.Query()
 	id := params.Get("id")
+	checkCarID(c, id)
 
 	car, err := datab.GetCarByID(db, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "There was an error while trying to query the database")
 	}
 	c.JSON(http.StatusOK, car)
+}
+
+func checkCarID(c *gin.Context, id string) {
+	err := datab.CheckForID(db, id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "Passed ID is not available")
+	}
+}
+
+func delCarByID(c *gin.Context) {
+	params := c.Request.URL.Query()
+	id := params.Get("id")
+	checkCarID(c, id)
+
+	err := datab.DeleteCar(db, id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "There was a problem deleting the car")
+	}
+
 }
 
 var db *sql.DB
@@ -51,6 +71,7 @@ func main() {
 	router.GET("/brands", getAllBrands)
 	router.GET("/cars", getAllCars)
 	router.GET("/car", getCarByID)
+	router.DELETE("/del-car", delCarByID)
 
 	fmt.Println("Server Starting")
 	router.Run("localhost:8080")

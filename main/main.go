@@ -64,8 +64,14 @@ func addCar(c *gin.Context) {
 		return
 	}
 
-	datab.AddCar(db, newCar)
+	err := datab.AddCar(db, newCar)
 
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Unable to insert car into database. Check your inputs.")
+		return
+	}
+	newCar.CarID = 000
+	c.JSON(http.StatusOK, newCar)
 }
 
 var db *sql.DB

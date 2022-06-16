@@ -2,7 +2,6 @@ package datab
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 )
 
@@ -25,14 +24,14 @@ type CarComit struct {
 	HighwayMPG       int     `json:"highway_mpg"`
 }
 
-func AddCar(db *sql.DB, c CarComit) {
+func AddCar(db *sql.DB, c CarComit) error {
 	query := "insert into car (carBrandID, carBodyID, driveWheelID, engineID, engineLocationID, carName, " +
 		"price, wheelBase, carLength, carWidth, carHeight, curbWeight, doorNumber, cityMPG, highwayMPG) " +
 		"values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 	stmt, err := db.Prepare(query)
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 	defer stmt.Close()
 
@@ -42,16 +41,17 @@ func AddCar(db *sql.DB, c CarComit) {
 
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 
 	car, err := res.RowsAffected()
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
+	log.Println("Rows Affected insert : %d", car)
 
-	fmt.Println(car)
-
+	return nil
 }
 
 //{

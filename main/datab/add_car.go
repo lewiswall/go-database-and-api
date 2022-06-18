@@ -53,22 +53,3 @@ func AddCar(db *sql.DB, c CarComit) error {
 
 	return nil
 }
-
-//{
-//"car_id":0,
-//"brand_id":1,
-//"body_id":1,
-//"drive_wheel_id":1,
-//"engine_id":1,
-//"engine_location_id":1,
-//"car_name":"Lewiss",
-//"price":"£100,000",
-//"wheel_base":20,
-//"car_length":20,
-//"car_width":20,
-//"car_height":20,
-//"curb_weight":20,
-//"door_number":5,
-//"city_mpg":18,
-//"highway_mpg":18
-//}

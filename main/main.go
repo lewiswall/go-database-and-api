@@ -74,6 +74,24 @@ func addCar(c *gin.Context) {
 	c.JSON(http.StatusOK, newCar)
 }
 
+func updateCar(c *gin.Context) {
+	params := c.Request.URL.Query()
+	id := params.Get("id")
+	checkCarID(c, id)
+
+	var updatedCar datab.CarComit
+	if err := c.BindJSON(&updatedCar); err != nil {
+		log.Println(err)
+		return
+	}
+
+	err := datab.UpdateCar(db, updatedCar, id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "Could not update car")
+	}
+	c.JSON(http.StatusOK, "Car Updated")
+}
+
 var db *sql.DB
 
 func main() {
@@ -91,7 +109,27 @@ func main() {
 	router.GET("/car", getCarByID)
 	router.DELETE("/del-car", delCarByID)
 	router.POST("/add-car", addCar)
+	router.PUT("/update-car", updateCar)
 
 	fmt.Println("Server Starting")
 	router.Run("localhost:8080")
 }
+
+//{
+//"car_id": 0,
+//"brand_id": 1,
+//"body_id": 1,
+//"drive_wheel_id": 1,
+//"engine_id": 1,
+//"engine_location_id": 1,
+//"car_name": "Lewiss",
+//"price": "£100,000",
+//"wheel_base": 20,
+//"car_length": 20,
+//"car_width": 20,
+//"car_height": 20,
+//"curb_weight": 20,
+//"door_number": 5,
+//"city_mpg": 18,
+//"highway_mpg": 18
+//}
